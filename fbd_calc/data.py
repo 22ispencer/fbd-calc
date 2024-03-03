@@ -35,6 +35,9 @@ class Node:
     def __eq__(self, other):
         return self.X == other.X and self.Y == other.Y
 
+    def __str__(self):
+        return f"(x: {self.X:6.5}, y: {self.Y:6.5})"
+
 
 class Member:
     NODE_1: int

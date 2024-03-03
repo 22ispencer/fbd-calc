@@ -78,12 +78,25 @@ class App(cmd2.Cmd):
             self.poutput(f"invalid node: {args.node_id}")
             return
         new_force = Force(args.x, args.y)
-        self.nodes[args.node_id].forces.append(new_force)
-        self.poutput(vars(new_force))
+        (self.nodes[args.node_id]).forces.append(new_force)
+        self.poutput(f"Force added to node: {args.node_id}")
 
-    def do_print(self):
+    def do_print(self, args):
         """Print the nodes"""
-        print(self.nodes, self.members)
+        if len(self.nodes) == 0:
+            print("No data to print")
+        self.poutput("---------- Nodes ----------")
+        for i, node in enumerate(self.nodes):
+            self.poutput(f"\n       --- Node #{i} ---\n"
+                         f"pos:     ( {node.X:6.5} , {node.Y:6.5})")
+            for j, force in enumerate(node.forces):
+                self.poutput(f"force {j}:  {force.X:6.5}i + {force.Y:6.5}j")
+            node = None
+        if len(self.members) == 0:
+            return
+        self.poutput("--------- Members ---------\n")
+        for i, member in enumerate(self.members):
+            self.poutput(f"node_1: {member.NODE_1}, node_2: {member.NODE_2}")
 
     def do_q(self, args):
         """Exit the application"""
