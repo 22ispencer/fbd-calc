@@ -82,6 +82,7 @@ class App(cmd2.Cmd):
         self.poutput(vars(new_force))
 
     def do_print(self):
+        """Print the nodes"""
         print(self.nodes, self.members)
 
     def do_q(self, args):
