@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """The cli application for fbd-solve"""
 import cmd2
-from fbd_calc.data import Member, Node, Support
+from fbd_calc.data import Force, Member, Node, Support
 
 
 class App(cmd2.Cmd):
@@ -42,7 +42,7 @@ class App(cmd2.Cmd):
                 support = Support.NONE
 
         self.nodes.append(Node(args.x, args.y, support, None))
-        self.poutput(f"Node created with id: {len(self.nodes) - 1}\n")
+        self.poutput(f"Node created with id: {len(self.nodes) - 1}")
 
     new_member_parser = cmd2.Cmd2ArgumentParser()
     new_member_parser.add_argument("node_1", type=int,
@@ -53,7 +53,15 @@ class App(cmd2.Cmd):
     @cmd2.with_argparser(new_member_parser)
     def do_new_member(self, args):
         """For adding a member to the problem"""
-        self.poutput(f"node_1: {args.node_1}, node_2: {args.node_2}")
+        if not (0 <= args.node_1 <= len(self.nodes) - 1):
+            self.poutput(f"invalid node: {args.node_1}")
+            return
+        if not (0 <= args.node_2 <= len(self.nodes) - 1):
+            self.poutput(f"invalid node: {args.node_2}")
+            return
+        new_member = Member(args.node_1, args.node_2)
+        self.members.append(new_member)
+        self.poutput(f"new member created with id: {len(self.members) - 1}")
 
     new_force_parser = cmd2.Cmd2ArgumentParser()
     new_force_parser.add_argument("node_id", type=int,
@@ -66,7 +74,12 @@ class App(cmd2.Cmd):
     @cmd2.with_argparser(new_force_parser)
     def do_new_force(self, args):
         """For adding a force to a node"""
-        self.poutput(f"{args.node_id=}, {args.x=}, {args.y=}")
+        if not (0 <= args.node_id <= len(self.nodes) - 1):
+            self.poutput(f"invalid node: {args.node_id}")
+            return
+        new_force = Force(args.x, args.y)
+        self.nodes[args.node_id].forces.append(new_force)
+        self.poutput(vars(new_force))
 
     def do_print(self):
         print(self.nodes, self.members)
