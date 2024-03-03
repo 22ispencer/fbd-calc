@@ -2,7 +2,6 @@
 """The cli application for fbd-solve"""
 import cmd2
 from fbd_calc.data import Member, Node, Support
-import pandas as pd
 
 
 class App(cmd2.Cmd):
@@ -56,7 +55,21 @@ class App(cmd2.Cmd):
         """For adding a member to the problem"""
         self.poutput(f"node_1: {args.node_1}, node_2: {args.node_2}")
 
-    
+    new_force_parser = cmd2.Cmd2ArgumentParser()
+    new_force_parser.add_argument("node_id", type=int,
+                                  help="the node to add the force to")
+    new_force_parser.add_argument("x", type=float,
+                                  help="the x component of the force")
+    new_force_parser.add_argument("y", type=float,
+                                  help="the y component of the force")
+
+    @cmd2.with_argparser(new_force_parser)
+    def do_new_force(self, args):
+        """For adding a force to a node"""
+        self.poutput(f"{args.node_id=}, {args.x=}, {args.y=}")
+
+    def do_print(self):
+        print(self.nodes, self.members)
 
     def do_q(self, args):
         """Exit the application"""
