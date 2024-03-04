@@ -41,7 +41,7 @@ class App(cmd2.Cmd):
             case _:
                 support = Support.NONE
 
-        self.nodes.append(Node(args.x, args.y, support, None))
+        self.nodes.append(Node(args.x, args.y, support, []))
         self.poutput(f"Node created with id: {len(self.nodes) - 1}")
 
     new_member_parser = cmd2.Cmd2ArgumentParser()
@@ -59,8 +59,8 @@ class App(cmd2.Cmd):
         if not (0 <= args.node_2 <= len(self.nodes) - 1):
             self.poutput(f"invalid node: {args.node_2}")
             return
-        new_member = Member(args.node_1, args.node_2)
-        self.members.append(new_member)
+        self.members.append(Member(args.node_1, args.node_2))
+        print(vars(Member(0, 1)))
         self.poutput(f"new member created with id: {len(self.members) - 1}")
 
     new_force_parser = cmd2.Cmd2ArgumentParser()
@@ -77,8 +77,7 @@ class App(cmd2.Cmd):
         if not (0 <= args.node_id <= len(self.nodes) - 1):
             self.poutput(f"invalid node: {args.node_id}")
             return
-        new_force = Force(args.x, args.y)
-        (self.nodes[args.node_id]).forces.append(new_force)
+        self.nodes[args.node_id].forces.append(Force(args.x, args.y))
         self.poutput(f"Force added to node: {args.node_id}")
 
     def do_print(self, args):
@@ -87,16 +86,18 @@ class App(cmd2.Cmd):
             print("No data to print")
         self.poutput("---------- Nodes ----------")
         for i, node in enumerate(self.nodes):
+
             self.poutput(f"\n       --- Node #{i} ---\n"
-                         f"pos:     ( {node.X:6.5} , {node.Y:6.5})")
+                         f"pos:     ({node.X:6.5}  , {node.Y:6.5})")
+            if len(node.forces) <= 0:
+                continue
             for j, force in enumerate(node.forces):
                 self.poutput(f"force {j}:  {force.X:6.5}i + {force.Y:6.5}j")
-            node = None
         if len(self.members) == 0:
             return
-        self.poutput("--------- Members ---------\n")
-        for i, member in enumerate(self.members):
-            self.poutput(f"node_1: {member.NODE_1}, node_2: {member.NODE_2}")
+        self.poutput("\n--------- Members ---------\n")
+        for member in self.members:
+            self.poutput(f"node_1: {member.NODE_1}, node_2: {member.n2}")
 
     def do_q(self, args):
         """Exit the application"""

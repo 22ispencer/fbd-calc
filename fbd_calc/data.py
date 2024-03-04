@@ -32,6 +32,10 @@ class Node:
         if forces is not None:
             self.forces = forces
 
+    def add_force(self, force: Force):
+        self.forces.append(force)
+        print("added force to ", vars(self))
+
     def __eq__(self, other):
         return self.X == other.X and self.Y == other.Y
 
@@ -40,12 +44,12 @@ class Node:
 
 
 class Member:
-    NODE_1: int
-    NODE_2: int
+    n1: int
+    n2: int
 
     def __init__(self, node_1: int, node_2: int):
-        self.NODE_1: node_1
-        self.NODE_2: node_2
+        self.n1: node_1
+        self.n2: node_2
 
     def __eq__(self, other):
-        return (self.NODE_1, self.NODE_2) == (other.NODE_1, other.NODE_2)
+        return {self.n1, self.n2} == {other.n1, other.n2}
