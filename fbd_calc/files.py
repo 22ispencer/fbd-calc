@@ -1,24 +1,25 @@
-from fbd_calc.data import Force, Node, Member, SupportEnum
+from fbd_calc.data import AppData
 import json
+from pydantic import ValidationError
 
 
-def write(nodes: list[Node],
-          members: list[Member],
+def write(app_data: AppData,
           filename: str = "fbd-data.json"):
     """
     For writing to a file
 
     Args:
-        nodes (list[Node]): The nodes to add
-        members (list[Member]): The members to add
+        app_data (AppData): The data to write
         filename (str): The name/path of the file to write to
     """
 
+    data = app_data.model_dump_json(indent=2)
+
     with open(filename, "w") as outfile:
-        json.dump(data, outfile, indent=2)
+        outfile.write(data)
 
 
-def read(filename: str) -> tuple[list[Node], list[Member]] | bool:
+def read(filename: str) -> AppData | bool:
     """
     For reading from a given file
 
@@ -26,32 +27,15 @@ def read(filename: str) -> tuple[list[Node], list[Member]] | bool:
         filename (str): The name of the input file
 
     Returns:
-        tuple[list[Node], list[Member]] | bool: A tuple containing the list of
-            nodes and the list of members, or False if the given file is an
-            invalid format
+         AppData | bool: AppData with all the app data, or False if the given
+         file is in an invalid format
     """
     with open(filename, "r") as file:
-        data: dict = json.load(file)
+        file_data = file.readall()
 
-        if "nodes" not in data.keys():
+        try:
+            app_data = AppData.model_validate_json(file_data)
+        except ValidationError:
             return False
-
-        node_data = data["nodes"]
-        nodes: list[Node] = []
-        for n in node_data:
-            match n["support"]:
-                case "x":
-                    SupportEnum.X
-                case "y":
-                    SupportEnum.Y
-                case "xy":
-                    SupportEnum.XY
-                case "tfm":
-                    SupportEnum.tfm
-                case _:
-                    SupportEnum.NONE
-
-            forces: list[Force] = []
-            for f in n["forces"]:
-                forces.append(Force(f["X"], f["Y"]))
-            nodes.append(Node(n["x"], n["y"], ))
+        else:
+            return app_data
