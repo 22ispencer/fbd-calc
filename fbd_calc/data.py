@@ -1,52 +1,38 @@
 from enum import Enum
+from pydantic import BaseModel
 
 
-class Support(Enum):
-    NONE = "none"
-    X = "x"
-    Y = "y"
-    XY = "xy"
-    TFM = "tfm"
+class SupportEnum(str, Enum):
+    none = "none"
+    x = "x"
+    y = "y"
+    xy = "xy"
+    tfm = "tfm"
 
 
-class Force:
+class Force(BaseModel):
     X: float
     Y: float
 
-    def __init__(self, x: float, y: float):
-        self.X = x
-        self.Y = y
 
-
-class Node:
+class Node(BaseModel):
     X: float
     Y: float
-    support: Support
+    support: SupportEnum = SupportEnum.none
     forces: list[Force] = []
-
-    def __init__(self, x: float, y: float, support: Support,
-                 forces: list[Force]):
-        self.X = x
-        self.Y = y
-        self.support = support
-        if forces is not None:
-            self.forces = forces
-
-    def add_force(self, force: Force):
-        self.forces.append(force)
-        print("added force to ", vars(self))
 
     def __eq__(self, other):
         return self.X == other.X and self.Y == other.Y
 
-    def __str__(self):
-        return f"(x: {self.X:6.5}, y: {self.Y:6.5})"
 
-
-class Member:
+class Member(BaseModel):
     NODE_1: int
     NODE_2: int
 
-    def __init__(self, node_1: int, node_2: int):
-        self.NODE_1 = node_1
-        self.NODE_2 = node_2
+    def __eq__(self, other):
+        return {self.NODE_1, self.NODE_2} == {other.NODE_1, other.NODE_2}
+
+
+class AppData(BaseModel):
+    nodes: list[Node] = []
+    members: list[Member] = []
