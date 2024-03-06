@@ -60,7 +60,6 @@ class App(cmd2.Cmd):
             self.poutput(f"invalid node: {args.node_2}")
             return
         self.members.append(Member(args.node_1, args.node_2))
-        print(vars(Member(0, 1)))
         self.poutput(f"new member created with id: {len(self.members) - 1}")
 
     new_force_parser = cmd2.Cmd2ArgumentParser()
@@ -97,7 +96,7 @@ class App(cmd2.Cmd):
             return
         self.poutput("\n--------- Members ---------\n")
         for member in self.members:
-            self.poutput(f"node_1: {member.NODE_1}, node_2: {member.n2}")
+            self.poutput(f"node_1: {member.NODE_1}, node_2: {member.NODE_2}")
 
     def do_q(self, args):
         """Exit the application"""

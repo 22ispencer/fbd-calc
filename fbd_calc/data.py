@@ -44,12 +44,9 @@ class Node:
 
 
 class Member:
-    n1: int
-    n2: int
+    NODE_1: int
+    NODE_2: int
 
     def __init__(self, node_1: int, node_2: int):
-        self.n1: node_1
-        self.n2: node_2
-
-    def __eq__(self, other):
-        return {self.n1, self.n2} == {other.n1, other.n2}
+        self.NODE_1 = node_1
+        self.NODE_2 = node_2
