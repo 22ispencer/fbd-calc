@@ -10,6 +10,7 @@ import os
 
 class Categories(str, Enum):
     NEW = "Creation Commands"
+    DELETE = "Deletion Commands"
     FILES = "Load / Save Files"
 
     def __str__(self):
@@ -86,6 +87,32 @@ class App(cmd2.Cmd):
         self.app_data.nodes[args.node_id].forces.append(Force(X=args.x,
                                                               Y=args.y))
         self.poutput(f"Force added to node: {args.node_id}")
+
+    delete_node_parser = cmd2.Cmd2ArgumentParser()
+    delete_node_parser.add_argument("node_id", type=int,
+                                    help="the node to delete")
+
+    @with_category(Categories.DELETE)
+    @cmd2.with_argparser(delete_node_parser)
+    def do_delete_node(self, args):
+        if (not (0 <= args.node_id < len(self.app_data.nodes))
+                or len(self.app_data.nodes) == 0):
+            self.poutput(f"Invalid node: {args.node_id}")
+            return
+        self.app_data.nodes.pop(args.node_id)
+
+    delete_member_parser = cmd2.Cmd2ArgumentParser()
+    delete_member_parser.add_argument("member_id", type=int,
+                                      help="the member to delete")
+
+    @with_category(Categories.DELETE)
+    @cmd2.with_argparser(delete_member_parser)
+    def do_delete_member(self, args):
+        if (not (0 <= args.member_id < len(self.app_data.members))
+                or len(self.app_data.members) == 0):
+            self.poutput(f"Invalid member: {args.member_id}")
+            return
+        self.app_data.members.pop(args.member_id)
 
     save_parser = cmd2.Cmd2ArgumentParser()
     save_parser.add_argument("-o", "--output", type=str,
