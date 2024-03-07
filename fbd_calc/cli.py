@@ -99,6 +99,14 @@ class App(cmd2.Cmd):
                 or len(self.app_data.nodes) == 0):
             self.poutput(f"Invalid node: {args.node_id}")
             return
+        for m in self.app_data.members:
+            if m.NODE_1 == args.node_id or m.NODE_2 == args.node_id:
+                self.app_data.members.remove(m)
+            else:
+                if m.NODE_1 > args.node_id:
+                    m.NODE_1 -= 1
+                if m.NODE_2 > args.node_id:
+                    m.NODE_2 -= 1
         self.app_data.nodes.pop(args.node_id)
 
     delete_member_parser = cmd2.Cmd2ArgumentParser()
