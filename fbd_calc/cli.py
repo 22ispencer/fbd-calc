@@ -1,7 +1,19 @@
 #!/usr/bin/env python
 """The cli application for fbd-solve"""
 import cmd2
-from fbd_calc.data import AppData, Force, Member, Node, SupportEnum
+from cmd2 import with_category
+from enum import Enum
+from fbd_calc.data import AppData, Force, Member, Node
+import fbd_calc.files as files
+import os
+
+
+class Categories(str, Enum):
+    NEW = "Creation Commands"
+    FILES = "Load / Save Files"
+
+    def __str__(self):
+        return str.__str__(self)
 
 
 class App(cmd2.Cmd):
@@ -25,6 +37,7 @@ class App(cmd2.Cmd):
                                  default="none",
                                  help="the type of support for the node")
 
+    @with_category(str(Categories.NEW))
     @cmd2.with_argparser(new_node_parser)
     def do_new_node(self, args):
         """For adding a node to the problem"""
@@ -40,6 +53,7 @@ class App(cmd2.Cmd):
     new_member_parser.add_argument("node_2", type=int,
                                    help="the second node id")
 
+    @with_category(Categories.NEW)
     @cmd2.with_argparser(new_member_parser)
     def do_new_member(self, args):
         """For adding a member to the problem"""
@@ -62,6 +76,7 @@ class App(cmd2.Cmd):
     new_force_parser.add_argument("y", type=float,
                                   help="the y component of the force")
 
+    @with_category(Categories.NEW)
     @cmd2.with_argparser(new_force_parser)
     def do_new_force(self, args):
         """For adding a force to a node"""
@@ -71,6 +86,35 @@ class App(cmd2.Cmd):
         self.app_data.nodes[args.node_id].forces.append(Force(X=args.x,
                                                               Y=args.y))
         self.poutput(f"Force added to node: {args.node_id}")
+
+    save_parser = cmd2.Cmd2ArgumentParser()
+    save_parser.add_argument("-o", "--output", type=str,
+                             default=None,
+                             help="The file to write to")
+
+    @with_category(Categories.FILES)
+    @cmd2.with_argparser(save_parser)
+    def do_save(self, args):
+        if args.output:
+            (dir, filename) = os.path.split(args.output)
+            if not os.path.exists(dir):
+                self.poutput(f"Invalid  directory: {dir}")
+                return
+            files.write(self.app_data, args.output)
+            return
+        files.write(self.app_data)
+
+    load_parser = cmd2.Cmd2ArgumentParser()
+    load_parser.add_argument("file", type=str,
+                             help="the file to load")
+
+    @with_category(Categories.FILES)
+    @cmd2.with_argparser(load_parser)
+    def do_load(self, args):
+        if not os.path.exists(args.file):
+            self.poutput("No such file exists")
+            return
+        self.app_data = files.read(args.file)
 
     def do_print(self, args):
         """Print the nodes"""

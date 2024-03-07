@@ -1,5 +1,4 @@
 from fbd_calc.data import AppData
-import json
 from pydantic import ValidationError
 
 
@@ -14,6 +13,7 @@ def write(app_data: AppData,
     """
 
     data = app_data.model_dump_json(indent=2)
+    print(data)
 
     with open(filename, "w") as outfile:
         outfile.write(data)
@@ -31,7 +31,7 @@ def read(filename: str) -> AppData | bool:
          file is in an invalid format
     """
     with open(filename, "r") as file:
-        file_data = file.readall()
+        file_data = file.read()
 
         try:
             app_data = AppData.model_validate_json(file_data)
