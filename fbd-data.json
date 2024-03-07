@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "X": 0.0,
+      "Y": 0.0,
+      "support": "none",
+      "forces": []
+    },
+    {
+      "X": 1.0,
+      "Y": 0.0,
+      "support": "none",
+      "forces": []
+    },
+    {
+      "X": 1.0,
+      "Y": 1.0,
+      "support": "none",
+      "forces": []
+    },
+    {
+      "X": 2.0,
+      "Y": 0.0,
+      "support": "none",
+      "forces": []
+    },
+    {
+      "X": 2.0,
+      "Y": 1.0,
+      "support": "none",
+      "forces": []
+    }
+  ],
+  "members": [
+    {
+      "NODE_1": 0,
+      "NODE_2": 1
+    },
+    {
+      "NODE_1": 0,
+      "NODE_2": 2
+    },
+    {
+      "NODE_1": 1,
+      "NODE_2": 2
+    },
+    {
+      "NODE_1": 2,
+      "NODE_2": 4
+    },
+    {
+      "NODE_1": 1,
+      "NODE_2": 3
+    },
+    {
+      "NODE_1": 1,
+      "NODE_2": 4
+    },
+    {
+      "NODE_1": 3,
+      "NODE_2": 4
+    }
+  ]
+}
